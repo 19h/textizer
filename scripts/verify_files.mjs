@@ -44,4 +44,24 @@ assert.deepEqual(separated.pages.map(p=>p.file_path),['/src/project/a.rs','/src/
 assert.deepEqual(separated.pages.map(p=>p.index),[0,1]);
 const huge=[{path:'a',text:'x'.repeat(4*1024*1024)}];
 assert.ok(renderInputs('',huge,true,'').every(s=>bytes(s.text).length<=4*1024*1024));
+const spacedFiles = [
+  {path:'project/two  words.txt',text:'  first\n\nsecond\tthird  '},
+  {path:'project/b.txt',text:' next\u0085line\n'},
+];
+assert.equal(fileText(spacedFiles[0],'/root',true),'# /root/project/two  words.txt\nfirst second third');
+assert.equal(fileText({path:'bom.txt',text:'\ufeff first\n'},'',true),'# bom.txt\n\ufeff first');
+for (const separate of [false,true]) {
+  const inputs=renderInputs('',spacedFiles,separate,'/root',true);
+  for (const input of inputs) {
+    const doc=new PackedText(input.text,JSON.stringify({...options,reflow:false}));
+    try {
+      const rows=JSON.parse(doc.pageRowsJson(0));
+      assert.ok(rows[0].text.startsWith('# /root/project/'));
+      assert.equal(rows[0].hard_break,true);
+      assert.ok(rows.some(row=>row.text==='first second third' || row.text==='next line'));
+      assert.ok(!rows.some(row=>row.text.includes('# ') && row.text.includes('first second third')));
+    } finally {doc.free();}
+  }
+}
+assert.equal(combinedText(spacedFiles,'/root'),renderInputs('',spacedFiles,false,'/root',false)[0].text);
 console.log('PASS: folder batches, headers, binary filtering, UTF-16, empty files, Unicode chunks and combined/per-file plans');

@@ -401,7 +401,8 @@ entries supplied by the browser. Folder traversal is recursive and drains every
 and combined or per-file images. Each included file begins with `# path` and LF.
 In per-file mode each file starts a new native document; long files can still
 produce multiple pages. Combined mode packs files consecutively in path order.
-Files are never reflowed, so path headers retain their line breaks.
+Reflow applies independently to each file body when enabled. Path headers and
+the separators between files retain their line breaks in both output modes.
 
 Browsers expose selected-folder-relative paths, not arbitrary absolute OS paths.
 For a selected `project` folder, enter its parent (e.g. `/Users/me`) as the prefix
@@ -448,7 +449,7 @@ File-set assumptions and probes:
 | F1 | The browser exposes only selected-folder-relative paths | Real Chromium folder-input test; an explicit prefix constructs absolute headers |
 | F2 | A native clipboard may omit directory entries | Directory-entry paste is tested synthetically; real Finder behavior remains browser-dependent and uses the picker fallback |
 | F3 | Encoding and byte signatures distinguish ordinary text from common binaries, not every possible format | Invalid UTF-8, PNG/PDF/executable signatures, NUL/control bytes, UTF-16, and empty-file tests |
-| F4 | File boundaries are preserved independently of layout choices | Combined/per-file native plans, reflow disabled for sets, persisted removal, and ZIP header checks |
+| F4 | File boundaries are preserved independently of layout choices | Combined/per-file plans, per-body reflow, persisted removal, and ZIP header checks |
 
 Collection takes O(N + B + F log F) time and O(B + F) retained space, where N is
 visited entries, B decoded bytes, and F accepted files. Directory depth and total

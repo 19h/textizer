@@ -1,9 +1,9 @@
 // Textizer web UI. Plain ES modules: layout and PNG encoding run in worker.js on
 // the WASM package, history lives in IndexedDB via store.js.
-import { openStore } from './store.js?v=file-set-5';
+import { openStore } from './store.js?v=file-reflow-6';
 import { zip } from './zip.js';
-import { captureTransfer, captureFiles, collectTextFiles, combinedText, displayPath, MAX_SET_BYTES, MAX_FILES } from './files.js?v=file-set-5';
-import { DEFAULTS, RESOLUTIONS, capacity, normalizeOptions, optionProblem, resolutionName } from './options.js?v=file-set-5';
+import { captureTransfer, captureFiles, collectTextFiles, combinedText, displayPath, MAX_SET_BYTES, MAX_FILES } from './files.js?v=file-reflow-6';
+import { DEFAULTS, RESOLUTIONS, capacity, normalizeOptions, optionProblem, resolutionName } from './options.js?v=file-reflow-6';
 
 const MAX_INPUT_BYTES = 4 * 1024 * 1024; // the library limit, checked before anything is stored
 const LARGE_TEXT = 256 * 1024; // above this many UTF-16 units, typing re-lays out less eagerly
@@ -146,7 +146,7 @@ class Renderer {
     this.#generation++;
     for (const request of this.#pending.values()) request.reject(new Superseded('superseded'));
     this.#pending.clear();
-    const worker = new Worker(new URL('./worker.js?v=file-set-5', import.meta.url), { type: 'module' });
+    const worker = new Worker(new URL('./worker.js?v=file-reflow-6', import.meta.url), { type: 'module' });
     this.#worker = worker;
     const ready = new Promise((resolve, reject) => {
       worker.onmessage = ({ data }) => {
@@ -359,8 +359,7 @@ function syncOptionsUI() {
   for (const [input, value] of [[ui.cols, o.max_columns], [ui.width, o.max_width], [ui.height, o.max_height]]) {
     if (document.activeElement !== input) input.value = Number.isFinite(value) ? String(value) : '';
   }
-  ui.reflow.checked = o.reflow && !state.files.length;
-  ui.reflow.disabled = state.files.length > 0;
+  ui.reflow.checked = o.reflow;
   ui.reflowSwitch.classList.toggle('ph-switch--on', o.reflow);
   const cells = capacity(o);
   ui.capacity.textContent = Number.isFinite(cells.characters)
@@ -817,7 +816,6 @@ async function renderNow() {
   const seq = ++renderSeq;
   const text = state.text;
   const options = { ...state.options };
-  if (state.files.length) options.reflow = false; // keep each # path header on its own line
   const entry = state.current;
   const problem = optionProblem(options);
   showOptionProblem(problem);

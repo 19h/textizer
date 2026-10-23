@@ -18,12 +18,14 @@ export function displayPath(path, prefix = '') {
   return base ? `${base}/${cleanPath(path)}` : cleanPath(path);
 }
 
-export function fileText(file, prefix = '') {
-  return `# ${displayPath(file.path, prefix)}\n${file.text}`;
+export function fileText(file, prefix = '', reflow = false) {
+  // Match Rust split_whitespace() rather than JavaScript's different \s set.
+  const body = reflow ? file.text.replace(/\p{White_Space}+/gu, ' ').replace(/^ +| +$/g, '') : file.text;
+  return `# ${displayPath(file.path, prefix)}\n${body}`;
 }
 
-export function combinedText(files, prefix = '') {
-  return files.map(file => fileText(file, prefix)).join('\n\n');
+export function combinedText(files, prefix = '', reflow = false) {
+  return files.map(file => fileText(file, prefix, reflow)).join('\n\n');
 }
 
 export function decodeText(bytes, file = {}) {
@@ -130,8 +132,8 @@ export function chunks(text, budget = MAX_FILE_BYTES) {
   return result;
 }
 
-export function renderInputs(text, files, separate, prefix) {
+export function renderInputs(text, files, separate, prefix, reflow = false) {
   if (!files?.length) return [{ text, path: null, fileIndex: null }];
-  if (!separate) return chunks(combinedText(files, prefix)).map(text => ({ text, path: null, fileIndex: null }));
-  return files.flatMap((file, fileIndex) => chunks(fileText(file, prefix)).map(text => ({ text, path: displayPath(file.path, prefix), fileIndex })));
+  if (!separate) return chunks(combinedText(files, prefix, reflow)).map(text => ({ text, path: null, fileIndex: null }));
+  return files.flatMap((file, fileIndex) => chunks(fileText(file, prefix, reflow)).map(text => ({ text, path: displayPath(file.path, prefix), fileIndex })));
 }

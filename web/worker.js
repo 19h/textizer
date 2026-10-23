@@ -1,9 +1,9 @@
 // Render worker. Owns the WASM document so layout and PNG encoding never block
 // the UI thread. Every request carries an id; page and rows requests also carry
 // the layout seq they were issued for, so a replaced document is never read.
-import init, { PackedText } from '../pkg/textizer.js?v=file-set-5';
-import { renderInputs, displayPath } from './files.js?v=file-set-5';
-import { createPlan } from './render-plan.js?v=file-set-5';
+import init, { PackedText } from '../pkg/textizer.js?v=file-reflow-6';
+import { renderInputs, displayPath } from './files.js?v=file-reflow-6';
+import { createPlan } from './render-plan.js?v=file-reflow-6';
 
 let doc = null;
 let docSeq = 0;
@@ -18,7 +18,7 @@ function activate(index) {
 
 const describe = error => (error instanceof Error ? error.message : String(error));
 
-const ready = init({ module_or_path: new URL('../pkg/textizer_bg.wasm?v=file-set-5', import.meta.url) }).then(
+const ready = init({ module_or_path: new URL('../pkg/textizer_bg.wasm?v=file-reflow-6', import.meta.url) }).then(
   () => self.postMessage({ type: 'ready' }),
   error => {
     self.postMessage({ type: 'fatal', message: describe(error) });
@@ -35,11 +35,19 @@ self.onmessage = async ({ data }) => {
       doc?.free();
       doc = null;
       activeIndex = -1;
-      const nextInputs = renderInputs(data.text, data.files, data.separate, data.prefix);
-      const nextManifest = createPlan(PackedText, nextInputs, data.options);
-      const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(data.text));
+      const hasFiles = Boolean(data.files?.length);
+      const nextInputs = renderInputs(data.text, data.files, data.separate, data.prefix, data.options.reflow);
+      // File bodies have already been reflowed individually; native document
+      // reflow would collapse the header and file boundaries as well.
+      const nextOptions = hasFiles ? { ...data.options, reflow: false } : data.options;
+      const nextManifest = createPlan(PackedText, nextInputs, nextOptions);
+      nextManifest.options = { ...data.options };
+      nextManifest.reflow_scope = hasFiles ? 'file_bodies' : 'document';
+      const sourceBytes = new TextEncoder().encode(data.text);
+      nextManifest.input_bytes = sourceBytes.length;
+      const digest = await crypto.subtle.digest('SHA-256', sourceBytes);
       if (ticket !== generation) throw Error('document was replaced');
-      inputs = nextInputs; options = data.options; manifest = nextManifest;
+      inputs = nextInputs; options = nextOptions; manifest = nextManifest;
       manifest.source_sha256 = [...new Uint8Array(digest)].map(b => b.toString(16).padStart(2,'0')).join('');
       manifest.file_mode = data.files?.length ? (data.separate ? 'per_file' : 'combined') : null;
       manifest.files = data.files?.map(file => ({ path: displayPath(file.path, data.prefix), bytes: file.bytes })) ?? [];

@@ -176,7 +176,7 @@ try {
     const dt = new DataTransfer();
     const item = dt.items.add(new File([], 'project', {type:'application/x-directory'}));
     const leaf=(name,text)=>({name,isFile:true,file(ok){ok(new File([text],name));}});
-    const nested={name:'src',isDirectory:true,createReader(){let done=false;return {readEntries(ok){ok(done?[]:[leaf('b.rs','let b=2;')]);done=true;}};}};
+    const nested={name:'src',isDirectory:true,createReader(){let done=false;return {readEntries(ok){ok(done?[]:[leaf('b.rs','let   b=2;\\n\\nlet c=3;')]);done=true;}};}};
     const root={name:'project',isDirectory:true,createReader(){let batch=0;return {readEntries(ok){ok(batch++===0?[leaf('a.txt','alpha'),nested]:batch===2?[leaf('bad.bin',new Uint8Array([0,1,2]))]:[]);}};}};
     const original=DataTransferItem.prototype.webkitGetAsEntry;
     DataTransferItem.prototype.webkitGetAsEntry=()=>root;
@@ -187,13 +187,15 @@ try {
   await waitFor("document.querySelector('#file-count').textContent === '2' && document.querySelector('#text').value.includes('# project/src/b.rs')");
   await waitFor("document.querySelector('#skipped-summary').textContent === '1 skipped files'");
   await waitFor("document.querySelector('#pages-count').textContent === '1'");
+  assert.equal(await evaluate("document.querySelector('#opt-reflow').disabled"),false);
+  await evaluate("document.querySelector('#opt-reflow').click();true");
   await evaluate(`(() => {const p=document.querySelector('#path-prefix');p.value='/Users/me';p.dispatchEvent(new Event('input',{bubbles:true}));
     const mode=document.querySelector('#file-mode');mode.value='per_file';mode.dispatchEvent(new Event('change',{bubbles:true}));return true;})()`);
   await waitFor("document.querySelector('#pages-count').textContent === '2' && document.querySelector('#text').value.startsWith('# /Users/me/project/a.txt\\n')");
   await evaluate("document.querySelector('#file-list button').click();true");
   await waitFor("document.querySelector('#file-count').textContent === '1' && document.querySelector('#pages-count').textContent === '1'");
   await delay(700); await page('Page.reload');
-  await waitFor("document.querySelector('#file-count')?.textContent === '1' && document.querySelector('#file-mode').value === 'per_file' && document.querySelector('#path-prefix').value === '/Users/me'");
+  await waitFor("document.querySelector('#file-count')?.textContent === '1' && document.querySelector('#file-mode').value === 'per_file' && document.querySelector('#path-prefix').value === '/Users/me' && document.querySelector('#opt-reflow').checked");
   // Directory entries exposed through a paste event use the identical recursive intake.
   await evaluate(`(() => {const dt=new DataTransfer();const item=dt.items.add(new File([],'pasted',{type:'application/x-directory'}));
     const root={name:'pasted',isDirectory:true,createReader(){let done=false;return {readEntries(ok){ok(done?[]:[{name:'p.txt',isFile:true,file(ok){ok(new File(['paste body'],'p.txt'));}}]);done=true;}};}};
@@ -232,9 +234,15 @@ try {
   }
   const manifest=JSON.parse(contents.get('manifest.json'));
   assert.equal(manifest.file_mode,'per_file');assert.equal(manifest.files.length,4);
+  assert.equal(manifest.options.reflow,true);assert.equal(manifest.reflow_scope,'file_bodies');
   assert.equal(contents.size,manifest.pages.length+2);
   const rows=JSON.parse(contents.get('rows.json'));
   assert.ok(rows.flat().some(row=>row.text.startsWith('# /Users/me/folder-fixture/nested/two.rs')));
+  assert.ok(rows.flat().some(row=>row.text==='let b=2; let c=3;'));
+  for(const pageRows of rows) {
+    assert.ok(pageRows[0].text.startsWith('# /Users/me/'));
+    assert.equal(pageRows[0].hard_break,true);
+  }
   console.log('PASS: exported ZIP contains per-file PNGs, path headers and matching manifest');
   await page('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: false });
   await waitFor('innerWidth === 390');
