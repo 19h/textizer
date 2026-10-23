@@ -1,0 +1,11 @@
+/* Webfonts. No vendor font binaries were supplied for this brand, so both faces
+   are the nearest Google Fonts matches and are loaded from the Google CDN.
+   Replace with self-hosted @font-face + local src urls when real files exist. */
+@import url("https://fonts.googleapis.com/css2?family=Martian+Mono:wght@300;400;500;700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&display=swap");
+
+:root {
+  --font-display: "Martian Mono", "DM Mono", ui-monospace, monospace;
+  --font-mono: "DM Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-body: var(--font-mono);
+  --font-code: var(--font-mono);
+}

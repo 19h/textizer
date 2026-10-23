@@ -1,0 +1,93 @@
+:root {
+  /* base surfaces — warm charcoal stack, dark by default */
+  --void: #080706;
+  --ink-900: #12100e;
+  --ink-800: #1a1714;
+  --ink-700: #241f1b;
+  --ink-600: #2e2823;
+  --ink-500: #3d352e;
+  --ink-400: #4d443c;
+  --ink-300: #6b6058;
+
+  /* foreground ramp */
+  --paper-000: #ffffff;
+  --paper-100: #f5efe8;
+  --paper-200: #d8cec3;
+  --paper-300: #b8ada1;
+  --paper-400: #8c8177;
+  --paper-500: #6b6058;
+
+  /* primary accent — magenta */
+  --mag-100: #ffd0e2;
+  --mag-300: #ff6aa5;
+  --mag-500: #ff3d8b;
+  --mag-700: #d92b71;
+  --mag-900: #3d0f24;
+
+  /* signal colors */
+  --sig-ok: #4ade5e;
+  --sig-ok-dim: #12331a;
+  --sig-warn: #ffb000;
+  --sig-warn-dim: #33260a;
+  --sig-err: #ff4d3d;
+  --sig-err-dim: #3b1310;
+  --sig-info: #4dc4ff;
+  --sig-info-dim: #0e2733;
+
+  /* semantic aliases: surfaces */
+  --surface-page: var(--ink-900);
+  --surface-panel: var(--ink-800);
+  --surface-inset: var(--void);
+  --surface-raised: var(--ink-700);
+  --surface-hover: var(--ink-600);
+  --surface-active: var(--ink-500);
+  --surface-selected: var(--mag-900);
+
+  /* semantic aliases: text */
+  --text-primary: var(--paper-100);
+  --text-secondary: var(--paper-300);
+  --text-muted: var(--paper-400);
+  --text-disabled: var(--ink-300);
+  --text-accent: var(--mag-500);
+  --text-inverse: var(--void);
+  --text-link: var(--mag-500);
+  --text-link-hover: var(--mag-300);
+
+  /* semantic aliases: lines */
+  --line-hairline: var(--ink-600);
+  --line-default: var(--ink-500);
+  --line-strong: var(--ink-300);
+  --line-accent: var(--mag-500);
+
+  /* semantic aliases: interactive */
+  --accent: var(--mag-500);
+  --accent-hover: var(--mag-300);
+  --accent-press: var(--mag-700);
+  --accent-wash: var(--mag-900);
+  --focus-ring: var(--mag-500);
+  --selection-bg: var(--mag-500);
+  --selection-fg: var(--void);
+}
+
+/* light scope: inverted terminal, for print and docs pages */
+[data-theme="paper"] {
+  --surface-page: #f5efe8;
+  --surface-panel: #ffffff;
+  --surface-inset: #ebe3d9;
+  --surface-raised: #ffffff;
+  --surface-hover: #ebe3d9;
+  --surface-active: #ddd2c5;
+  --surface-selected: var(--mag-100);
+  --text-primary: #12100e;
+  --text-secondary: #3d352e;
+  --text-muted: #6b6058;
+  --text-disabled: #b8ada1;
+  --text-inverse: #ffffff;
+  --line-hairline: #ddd2c5;
+  --line-default: #b8ada1;
+  --line-strong: #3d352e;
+  --accent: var(--mag-700);
+  --text-accent: var(--mag-700);
+  --text-link: var(--mag-700);
+  --selection-fg: #ffffff;
+}

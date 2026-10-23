@@ -10,6 +10,8 @@
     "analysis_encoding_equivalence_gpt-5.6-sol.json": "6f2cef7557507ca45fb542ab9b7dba34a4e92180eb508d5fa6b5c17bb53ad3c2",
     "analysis_encoding_equivalence_gpt-6-sol.json": "aa96fd2b5b151d70b4180148d4986a0d8a087b8cdd59f62b6facc263d47709ef",
     "analysis_encoding_equivalence_gpt-6.1-sol.json": "3df772fd3319fba72968fb9e71e17e88e890f9b8705d1dc49cc94c027f79f26f",
-    "analysis_encoding_equivalence_gpt-6-astra.json": "56ea5435369e9f63ac6d0522fa0f9cd231dcdca71396593d4da4d0e8ec8d9e9f"
+    "analysis_encoding_equivalence_gpt-6-astra.json": "56ea5435369e9f63ac6d0522fa0f9cd231dcdca71396593d4da4d0e8ec8d9e9f",
+    "results_geometry_bisect_gpt-5.6-sol.json": "5b6b7476846d452719008e9335409747ebf172a8065d0b447b10682e36199d81",
+    "results_geometry_ceiling_gpt-5.6-sol.json": "164b6fbc2e0876fecf3a25a16ba3c9a83408b976d39d2a639aa57b47e313d9e0"
   }
 }

@@ -4,7 +4,7 @@ use std::{
     io::{self, Read},
     path::PathBuf,
 };
-use textizer::{Document, Options, Preset};
+use textizer::{Document, Options, PageMode, Preset, Theme};
 
 fn main() {
     if let Err(error) = run() {
@@ -22,9 +22,11 @@ fn run() -> Result<(), Box<dyn Error>> {
         match arg.as_str() {
             "-h" | "--help" => {
                 println!(
-                    "textizer [INPUT|-] [--out DIR] [--preset safe|data|prose|large]\n\
+                    "textizer [INPUT|-] [--out DIR] [--preset jetbrains_mono|safe|data|prose|large]\n\
+                    [--theme dark|light] [--no-crop] [--font-size 8..16] [--no-antialias]\n\
                     [--max-width PX] [--max-height PX] [--max-columns N]\n\
-                    [--grid 224|28|32] [--reflow]\n\n\
+                    [--grid 224|28|32] [--page-mode compact|full] [--reflow]\n\n\
+                    --max-columns 0 uses the full canvas width; dimensions are limited to 1932 px.\n\
                     Reads UTF-8 from INPUT or stdin. Writes PNG pages, row metadata and manifest.json.\n\
                     Output files are created exclusively; existing files are never overwritten."
                 );
@@ -33,19 +35,41 @@ fn run() -> Result<(), Box<dyn Error>> {
             "--out" => out = args.next().ok_or("--out requires a directory")?.into(),
             "--preset" => {
                 options.preset = match args.next().as_deref() {
+                    Some("jetbrains_mono") => Preset::JetbrainsMono,
                     Some("safe") => Preset::Safe,
                     Some("data") => Preset::Data,
                     Some("prose") => Preset::Prose,
                     Some("large") => Preset::Large,
-                    _ => return Err("--preset requires safe, data, prose, or large".into()),
+                    _ => {
+                        return Err(
+                            "--preset requires jetbrains_mono, safe, data, prose, or large".into(),
+                        );
+                    }
                 }
             }
+            "--theme" => {
+                options.theme = match args.next().as_deref() {
+                    Some("dark") => Theme::Dark,
+                    Some("light") => Theme::Light,
+                    _ => return Err("--theme requires dark or light".into()),
+                }
+            }
+            "--no-crop" => options.crop = false,
+            "--font-size" => options.font_size = args.next().ok_or("missing font size")?.parse()?,
+            "--no-antialias" => options.antialias = false,
             "--max-width" => options.max_width = args.next().ok_or("missing width")?.parse()?,
             "--max-height" => options.max_height = args.next().ok_or("missing height")?.parse()?,
             "--max-columns" => {
                 options.max_columns = args.next().ok_or("missing column count")?.parse()?
             }
             "--grid" => options.grid = args.next().ok_or("missing grid")?.parse()?,
+            "--page-mode" => {
+                options.page_mode = match args.next().as_deref() {
+                    Some("compact") => PageMode::Compact,
+                    Some("full") => PageMode::Full,
+                    _ => return Err("--page-mode requires compact or full".into()),
+                }
+            }
             "--reflow" => options.reflow = true,
             "-" => {
                 if input.replace(arg).is_some() {

@@ -1,0 +1,13 @@
+{
+  "font": "JetBrains Mono NL Regular",
+  "width": 8,
+  "height": 18,
+  "size_px": 13,
+  "threshold": 128,
+  "pillow_version": "12.1.1",
+  "format": "Sorted codepoints in jetbrains-mono-codepoints.bin (u32 LE); glyph-major, row-major; 1=ink, 0=background",
+  "glyph_count": 1327,
+  "source_filename": "JetBrainsMonoNL-Regular.ttf",
+  "source_sha256": "fb3b2575d7b0657359707993288f12a7360344d39387bb26050e276d61f6bd2a",
+  "sha256": "47f94846c9794e9144a57faaa13907248ce4d2e07b25a8d4a45f0a02a428d43c"
+}

@@ -1,0 +1,60 @@
+{
+  "rasterizer": "Pillow FreeType at native pixel size; grayscale coverage, no image scaling",
+  "pillow_version": "12.1.1",
+  "sizes": [
+    {
+      "size_px": 8,
+      "width": 5,
+      "height": 12,
+      "sha256": "fdf21e80d7e13adc7654507a5da565d60930af90c443aa9981d22def8d4448fb"
+    },
+    {
+      "size_px": 9,
+      "width": 6,
+      "height": 13,
+      "sha256": "f1d4b944d72608579c965c93f92459ff25243368cd81ce05cda811eba844793f"
+    },
+    {
+      "size_px": 10,
+      "width": 6,
+      "height": 14,
+      "sha256": "203532ee76e9ce757e65165e9a32c7993f2b5b0d73b5914e0cf4a2355109626a"
+    },
+    {
+      "size_px": 11,
+      "width": 7,
+      "height": 16,
+      "sha256": "31cca87a23946c32ff25520c9e65727ac491f80b00fa54118c8dfc292c3c32ad"
+    },
+    {
+      "size_px": 12,
+      "width": 8,
+      "height": 17,
+      "sha256": "73a769fdacc0a1d12e8529770344bdab59cc031c525c00094ce4bbd105775117"
+    },
+    {
+      "size_px": 13,
+      "width": 8,
+      "height": 18,
+      "sha256": "f35c3bfbe7bcf9733bd276823f80c31b5e0a6225a2f2dc75c49da0fbeb8abba1"
+    },
+    {
+      "size_px": 14,
+      "width": 9,
+      "height": 20,
+      "sha256": "c7dff4ed16781c03d059896eff3b4637bc596d10ad4647cc925a8d147de5ca9d"
+    },
+    {
+      "size_px": 15,
+      "width": 9,
+      "height": 21,
+      "sha256": "6f50b1941f779283633575bc499abf293c526525bea9a37e6f857a3cec4fc54e"
+    },
+    {
+      "size_px": 16,
+      "width": 10,
+      "height": 22,
+      "sha256": "f08614902c959a15af483a8196a03c17b3cdb2166a1cb85a6685d8d76c8ddc28"
+    }
+  ]
+}

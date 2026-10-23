@@ -1,0 +1,31 @@
+:root {
+  /* motion is switched, not eased. state changes snap; only opacity crossfades. */
+  --dur-0: 0ms; /* @kind other */
+  --dur-1: 60ms; /* @kind other */
+  --dur-2: 120ms; /* @kind other */
+  --dur-3: 200ms; /* @kind other */
+
+  --ease-step: steps(2, end); /* @kind other */
+  --ease-linear: linear; /* @kind other */
+  --ease-out: cubic-bezier(0.2, 0, 0, 1); /* @kind other */
+
+  --transition-state: color var(--dur-1) var(--ease-linear),
+    background-color var(--dur-1) var(--ease-linear),
+    border-color var(--dur-1) var(--ease-linear); /* @kind other */
+  --transition-fade: opacity var(--dur-2) var(--ease-linear); /* @kind other */
+
+  --blink-period: 1s; /* @kind other */
+}
+
+@keyframes ds-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+@keyframes ds-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes ds-scan {
+  from { background-position-y: 0; }
+  to { background-position-y: 3px; }
+}

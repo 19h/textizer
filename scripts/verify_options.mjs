@@ -1,0 +1,28 @@
+import assert from 'node:assert/strict';
+import { DEFAULTS, RESOLUTIONS, capacity, normalizeOptions, optionProblem, resolutionName } from '../web/options.js';
+
+assert.equal(optionProblem(DEFAULTS), null);
+assert.equal(resolutionName(DEFAULTS), 'shared');
+assert.equal(DEFAULTS.page_mode, 'full');
+assert.equal(DEFAULTS.max_columns, 0);
+assert.equal(DEFAULTS.preset, 'jetbrains_mono');
+assert.equal(DEFAULTS.theme, 'dark');
+assert.deepEqual(capacity(DEFAULTS), { columns: 200, rows: 88, characters: 17600 });
+assert.deepEqual(capacity({ ...DEFAULTS, font_size: 8 }), { columns: 320, rows: 133, characters: 42560 });
+assert.equal(optionProblem({ ...DEFAULTS, font_size: 7 }).field, 'fontSize');
+const claude = { ...DEFAULTS, ...RESOLUTIONS.claude };
+assert.equal(resolutionName(claude), 'claude');
+assert.equal(optionProblem(claude), null);
+const legacy = normalizeOptions({ max_width: 1568, max_height: 1568, max_columns: 64, grid: 224 });
+assert.equal(legacy.page_mode, 'compact');
+assert.equal(legacy.theme, 'light');
+assert.equal(legacy.max_width, 1568);
+assert.equal(legacy.max_columns, 64);
+assert.equal(resolutionName(legacy), 'custom');
+assert.equal(optionProblem({ ...DEFAULTS, max_columns: 7 }).field, 'cols');
+assert.equal(optionProblem({ ...DEFAULTS, max_width: 1933 }).field, 'width');
+assert.equal(optionProblem({ ...DEFAULTS, max_height: 1933 }).field, 'height');
+assert.equal(optionProblem({ ...DEFAULTS, max_columns: 512 }), null);
+assert.equal(optionProblem({ ...DEFAULTS, max_columns: 513 }).field, 'cols');
+assert.equal(normalizeOptions({ ...DEFAULTS, extra: 'omitted' }).extra, undefined);
+console.log('Web options: profiles, validation and legacy settings verified');

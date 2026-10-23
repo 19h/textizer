@@ -1,0 +1,35 @@
+:root {
+  /* every corner is square. radius tokens exist only to be zero. */
+  --radius: 0; /* @kind radius */
+  --radius-pill: 0; /* @kind radius */
+
+  --bw-hair: 1px;
+  --bw-thick: 2px;
+
+  --border-hairline: var(--bw-hair) solid var(--line-hairline); /* @kind other */
+  --border-default: var(--bw-hair) solid var(--line-default); /* @kind other */
+  --border-strong: var(--bw-hair) solid var(--line-strong); /* @kind other */
+  --border-accent: var(--bw-hair) solid var(--line-accent); /* @kind other */
+  --border-dashed: var(--bw-hair) dashed var(--line-default); /* @kind other */
+
+  /* no blur. depth is a hard offset block, like a drop-shadowed TUI window */
+  --shadow-none: none; /* @kind shadow */
+  --shadow-hard: 4px 4px 0 0 var(--void);
+  --shadow-hard-accent: 4px 4px 0 0 var(--accent-wash);
+  --shadow-inset: inset 0 0 0 1px var(--line-hairline);
+
+  /* focus is a 2px offset outline in accent, never a glow */
+  --ring: var(--bw-thick) solid var(--focus-ring); /* @kind other */
+  --ring-offset: 2px; /* @kind spacing */
+
+  /* optional CRT scanline overlay for hero surfaces */
+  --texture-scanline: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.03) 0px,
+    rgba(255, 255, 255, 0.03) 1px,
+    transparent 1px,
+    transparent 3px
+  ); /* @kind other */
+  --texture-grid: linear-gradient(to right, var(--ink-800) 1px, transparent 1px) 0 0 / 8px 8px,
+    linear-gradient(to bottom, var(--ink-800) 1px, transparent 1px) 0 0 / 8px 8px; /* @kind other */
+}

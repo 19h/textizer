@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="data:,">
+<title>textizer</title>
+<link rel="stylesheet" href="phosphor/styles.css">
+<link rel="stylesheet" href="app.css?v=file-set-5">
+<script type="module" src="app.js?v=file-set-5"></script>
+</head>
+<body>
+<div class="app" id="app">
+  <aside class="sidebar" id="sidebar" aria-label="history">
+    <div class="sidebar__head">
+      <span class="wordmark">textizer</span>
+      <span class="sidebar__ver">0.1.0</span>
+    </div>
+    <div class="sidebar__tools">
+      <label class="ph-inputwrap sidebar__search">
+        <span class="ph-inputwrap__affix"><span aria-hidden="true" class="ph-icon ph-icon--sm i-search"></span></span>
+        <input class="ph-input" id="search" type="search" placeholder="filter history" aria-label="filter history" autocomplete="off" spellcheck="false">
+      </label>
+      <button type="button" class="ph-iconbtn" id="new" aria-label="new text" title="new text (n)"><span aria-hidden="true" class="ph-icon i-plus"></span></button>
+    </div>
+    <div class="sidebar__label"><span>history</span><span class="count" id="hist-count">0</span></div>
+    <ul class="hist" id="history" aria-label="stored texts"></ul>
+    <div class="sidebar__foot">
+      <span id="store-kind">stored in this browser</span>
+      <button type="button" class="ph-btn ph-btn--ghost ph-btn--sm" id="clear-history" disabled>clear</button>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <main class="main">
+    <div class="ph-toolbar">
+      <button type="button" class="ph-iconbtn ph-iconbtn--ghost ph-iconbtn--sm narrow-only" id="drawer" aria-label="history" aria-controls="sidebar" aria-expanded="false"><span aria-hidden="true" class="ph-icon ph-icon--sm i-list"></span></button>
+      <span class="bar__title" id="title">new text</span>
+      <span class="ph-badge ph-badge--neutral" id="badge">draft</span>
+      <span class="ph-toolbar__spacer"></span>
+      <button type="button" class="ph-btn ph-btn--ghost ph-btn--sm narrow-only" id="new-bar"><span aria-hidden="true" class="ph-icon ph-icon--sm i-plus"></span>new</button>
+      <button type="button" class="ph-btn ph-btn--ghost ph-btn--sm" id="paste" title="new text from the clipboard">paste<span class="ph-keys wide-only"><kbd class="ph-kbd mod-key">⌘</kbd><kbd class="ph-kbd">v</kbd></span></button>
+      <button type="button" class="ph-btn ph-btn--ghost ph-btn--sm" id="open" aria-label="open file" title="open file"><span aria-hidden="true" class="ph-icon ph-icon--sm i-upload"></span><span class="wide-only">open file</span></button>
+      <input type="file" id="file" multiple hidden>
+      <button type="button" class="ph-btn ph-btn--ghost ph-btn--sm" id="open-folder">open folder</button>
+      <input type="file" id="folder" webkitdirectory multiple hidden>
+    </div>
+
+    <div class="scroll" id="scroll">
+      <section class="ph-panel" id="file-set" hidden aria-label="file set">
+        <header class="ph-panel__head"><span class="ph-panel__title">files <span id="file-count"></span></span>
+          <button type="button" class="ph-btn ph-btn--ghost ph-btn--sm" id="clear-files">clear set</button></header>
+        <div class="options">
+          <label class="opt"><span class="ph-label">images</span><select class="ph-input ph-select" id="file-mode">
+            <option value="combined">combined</option><option value="per_file">per file</option></select></label>
+          <label class="opt file-prefix"><span class="ph-label">path prefix</span><input class="ph-input" id="path-prefix" maxlength="4096" placeholder="/Users/me/parent-of-folder" aria-label="absolute path prefix"></label>
+        </div>
+        <p class="resolution-note">Paths are relative to the selected folder's parent. Set a prefix for absolute headers. The browser does not expose the disk's full path.</p>
+        <ul id="file-list" class="file-list"></ul>
+        <details id="skipped-files" hidden><summary id="skipped-summary"></summary><pre id="skipped-list"></pre></details>
+      </section>
+      <section class="ph-panel flush" aria-labelledby="input-title">
+        <header class="ph-panel__head">
+          <span class="ph-panel__title" id="input-title">input <span class="count" id="input-meta">0 chars</span></span>
+          <span class="head__actions">
+            <span class="ph-badge ph-badge--warn" id="crlf" title="carriage returns render as \r escapes; editing in the textarea normalizes them to lf" hidden>cr</span>
+          </span>
+        </header>
+        <div class="editor">
+          <pre class="editor__gutter" id="gutter" aria-hidden="true">1</pre>
+          <textarea class="editor__text" id="text" wrap="off" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="text to pack"></textarea>
+        </div>
+        <div class="options" role="group" aria-label="packing options">
+          <label class="opt"><span class="ph-label">size</span>
+            <span class="ph-selectwrap"><select class="ph-input ph-select ph-select--resolution" id="opt-resolution">
+              <option value="shared">shared · 1600 px</option>
+              <option value="claude">Claude · 1932 px</option>
+              <option value="custom">custom</option>
+            </select><span class="ph-selectwrap__caret" aria-hidden="true">▾</span></span></label>
+          <label class="opt"><span class="ph-label">pages</span>
+            <span class="ph-selectwrap"><select class="ph-input ph-select" id="opt-page-mode" title="Use the maximum page layout; crop trims unused output. Compact minimizes layout area.">
+              <option value="full">full size</option>
+              <option value="compact">compact</option>
+            </select><span class="ph-selectwrap__caret" aria-hidden="true">▾</span></span></label>
+          <label class="opt"><span class="ph-label">font</span>
+            <span class="ph-selectwrap"><select class="ph-input ph-select" id="opt-preset">
+              <option value="jetbrains_mono">JetBrains Mono</option>
+              <option value="safe">safe · 8x16</option>
+              <option value="data">data · 6x13</option>
+              <option value="prose">prose · 5x10</option>
+              <option value="large">large · 9x18</option>
+            </select><span class="ph-selectwrap__caret" aria-hidden="true">▾</span></span></label>
+          <label class="opt"><span class="ph-label">image theme</span>
+            <span class="ph-selectwrap"><select class="ph-input ph-select" id="opt-theme">
+              <option value="dark">dark</option>
+              <option value="light">light</option>
+            </select><span class="ph-selectwrap__caret" aria-hidden="true">▾</span></span></label>
+          <label class="opt"><span class="ph-label">size (px)</span>
+            <input class="ph-input" id="opt-font-size" type="number" min="8" max="16" step="1" inputmode="numeric"></label>
+          <label class="ph-switch" id="antialias-switch" title="Grayscale antialiasing at the selected font size. Bitmap fonts remain crisp.">
+            <input type="checkbox" role="switch" class="sr-only" id="opt-antialias">
+            <span class="ph-switch__track" aria-hidden="true"><span class="ph-switch__knob"></span></span><span>antialias</span></label>
+          <label class="opt" title="0 uses the full width. Explicit limits keep long data lines short."><span class="ph-label">cols (0 auto)</span>
+            <input class="ph-input" id="opt-cols" type="number" min="0" max="512" step="1" inputmode="numeric"></label>
+          <label class="opt"><span class="ph-label">grid</span>
+            <span class="ph-selectwrap"><select class="ph-input ph-select ph-select--short" id="opt-grid">
+              <option value="224">224</option>
+              <option value="32">32</option>
+              <option value="28">28</option>
+            </select><span class="ph-selectwrap__caret" aria-hidden="true">▾</span></span></label>
+          <label class="opt"><span class="ph-label">max w</span>
+            <input class="ph-input" id="opt-width" type="number" min="28" max="1932" step="1" inputmode="numeric"></label>
+          <label class="opt"><span class="ph-label">max h</span>
+            <input class="ph-input" id="opt-height" type="number" min="28" max="1932" step="1" inputmode="numeric"></label>
+          <label class="ph-switch" id="reflow-switch" title="collapse whitespace runs; changes the packed text">
+            <input type="checkbox" role="switch" class="sr-only" id="opt-reflow">
+            <span class="ph-switch__track" aria-hidden="true"><span class="ph-switch__knob"></span></span><span>reflow</span></label>
+          <label class="ph-switch" id="crop-switch" title="trim unused trailing rows and columns from the PNG without scaling text">
+            <input type="checkbox" role="switch" class="sr-only" id="opt-crop">
+            <span class="ph-switch__track" aria-hidden="true"><span class="ph-switch__knob"></span></span><span>crop</span></label>
+          <span class="options__spacer"></span>
+          <span class="ph-hint ph-hint--err" id="opt-error" role="alert"></span>
+          <button type="button" class="ph-btn ph-btn--ghost ph-btn--sm" id="opt-reset" title="restore the default options">reset</button>
+        </div>
+        <p class="resolution-note" id="capacity" aria-live="polite"></p>
+        <p class="resolution-note" id="resolution-note"></p>
+      </section>
+
+      <section class="ph-panel flush pages-panel" aria-labelledby="pages-title">
+        <header class="ph-panel__head pages__head">
+          <span class="ph-panel__title" id="pages-title">pages <span class="count" id="pages-count">0</span></span>
+          <span class="head__actions">
+            <span class="head__meta wide-only" id="pages-meta"></span>
+            <span class="seg" role="group" aria-label="zoom">
+              <button type="button" class="ph-btn ph-btn--ghost ph-btn--sm" data-zoom="fit" aria-pressed="true">fit</button>
+              <button type="button" class="ph-btn ph-btn--ghost ph-btn--sm" data-zoom="actual" aria-pressed="false">1:1</button>
+            </span>
+            <button type="button" class="ph-btn ph-btn--primary ph-btn--sm" id="zip" disabled title="pages, rows.json and manifest.json, as the cli writes them"><span aria-hidden="true" class="ph-icon ph-icon--sm i-package"></span>download .zip</button>
+          </span>
+        </header>
+        <div class="pages" id="pages" data-zoom="fit"></div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="ph-statusbar" id="statusbar">
+    <span class="ph-statusbar__item ph-statusbar__item--accent" id="st-mode">NORMAL</span>
+    <span class="ph-statusbar__item"><span class="ph-status ph-status--idle" id="st-state"><span class="ph-status__dot"></span><span id="st-state-label">loading wasm</span></span></span>
+    <span class="ph-statusbar__item wide-only" id="st-font" hidden></span>
+    <span class="ph-statusbar__item" id="st-layout" hidden></span>
+    <span class="ph-statusbar__item wide-only" id="st-bytes" hidden></span>
+    <span class="ph-statusbar__item wide-only" id="st-sha" hidden></span>
+    <span class="ph-statusbar__item ph-statusbar__spacer"></span>
+    <span class="ph-statusbar__item wide-only" id="st-store"></span>
+    <span class="ph-statusbar__item wide-only"><span class="ph-keys"><kbd class="ph-kbd">?</kbd>keys</span></span>
+  </footer>
+</div>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<div class="dropzone" id="dropzone" hidden>
+  <div class="dropzone__box">
+    <div class="dropzone__title">[ drop to pack ]</div>
+    <div class="dropzone__meta">files or folders · text only · 4 MiB per file</div>
+  </div>
+</div>
+
+<dialog class="ph-dialog" id="clear-dialog" aria-labelledby="clear-title">
+  <form method="dialog">
+    <header class="ph-dialog__head">
+      <span class="ph-dialog__title" id="clear-title">clear history</span>
+      <button class="ph-iconbtn ph-iconbtn--ghost ph-iconbtn--sm" value="cancel" aria-label="close"><span aria-hidden="true" class="ph-icon ph-icon--sm i-x"></span></button>
+    </header>
+    <div class="ph-dialog__body">this deletes every stored text from this browser. pages are rendered on demand and never stored, so nothing else is kept.</div>
+    <div class="ph-dialog__foot">
+      <button class="ph-btn ph-btn--ghost" value="cancel" autofocus>cancel</button>
+      <button class="ph-btn ph-btn--danger" value="confirm" id="clear-confirm"><span aria-hidden="true" class="ph-icon i-trash-2"></span><span id="clear-label">drop texts</span></button>
+    </div>
+  </form>
+</dialog>
+
+<dialog class="ph-dialog" id="keys-dialog" aria-labelledby="keys-title">
+  <form method="dialog">
+    <header class="ph-dialog__head">
+      <span class="ph-dialog__title" id="keys-title">keys</span>
+      <button class="ph-iconbtn ph-iconbtn--ghost ph-iconbtn--sm" value="close" aria-label="close"><span aria-hidden="true" class="ph-icon ph-icon--sm i-x"></span></button>
+    </header>
+    <table class="ph-table ph-table--compact keys-table">
+      <tbody>
+        <tr><td><span class="ph-keys"><kbd class="ph-kbd mod-key">⌘</kbd><kbd class="ph-kbd">v</kbd></span></td><td>new text from the clipboard, outside the editor</td></tr>
+        <tr><td><span class="ph-keys"><kbd class="ph-kbd">i</kbd></span></td><td>edit the text; the status bar shows INSERT</td></tr>
+        <tr><td><span class="ph-keys"><kbd class="ph-kbd">esc</kbd></span></td><td>leave the editor or close a panel</td></tr>
+        <tr><td><span class="ph-keys"><kbd class="ph-kbd">n</kbd></span></td><td>new empty text</td></tr>
+        <tr><td><span class="ph-keys"><kbd class="ph-kbd">/</kbd></span></td><td>filter history</td></tr>
+        <tr><td><span class="ph-keys"><kbd class="ph-kbd">j</kbd><kbd class="ph-kbd">k</kbd></span></td><td>next / previous stored text</td></tr>
+        <tr><td><span class="ph-keys"><kbd class="ph-kbd">del</kbd></span></td><td>delete the focused stored text</td></tr>
+        <tr><td><span class="ph-keys"><kbd class="ph-kbd">u</kbd></span></td><td>undo the last delete while its notice shows</td></tr>
+        <tr><td><span class="ph-keys"><kbd class="ph-kbd">y</kbd></span></td><td>copy the page in view as png</td></tr>
+        <tr><td><span class="ph-keys"><kbd class="ph-kbd">z</kbd></span></td><td>toggle fit / 1:1</td></tr>
+        <tr><td><span class="ph-keys"><kbd class="ph-kbd">?</kbd></span></td><td>this list; works even with single-key shortcuts off</td></tr>
+      </tbody>
+    </table>
+    <div class="ph-dialog__foot keys-foot">
+      <label class="ph-switch ph-switch--on" id="charkeys-switch">
+        <input type="checkbox" role="switch" class="sr-only" id="charkeys" checked>
+        <span class="ph-switch__track" aria-hidden="true"><span class="ph-switch__knob"></span></span><span>single-key shortcuts</span></label>
+    </div>
+  </form>
+</dialog>
+</body>
+</html>

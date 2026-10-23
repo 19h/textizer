@@ -1,0 +1,34 @@
+:root {
+  /* 4px grid. terminal layouts snap to the cell, never to arbitrary values */
+  --sp-0: 0; /* @kind spacing */
+  --sp-1: 2px;
+  --sp-2: 4px;
+  --sp-3: 8px;
+  --sp-4: 12px;
+  --sp-5: 16px;
+  --sp-6: 24px;
+  --sp-7: 32px;
+  --sp-8: 48px;
+  --sp-9: 64px;
+  --sp-10: 96px;
+
+  /* character cell — the unit real terminals think in */
+  --cell-w: 8px;
+  --cell-h: 20px;
+
+  /* component metrics */
+  --control-h-sm: 24px;
+  --control-h: 32px;
+  --control-h-lg: 40px;
+  --pad-control-x: var(--sp-4);
+  --pad-panel: var(--sp-5);
+  --pad-cell-x: var(--sp-4);
+  --pad-cell-y: var(--sp-3);
+
+  /* layout */
+  --measure: 76ch;
+  --width-page: 1120px;
+  --width-sidebar: 240px;
+  --width-rail: 44px;
+  --height-bar: 36px;
+}
