@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Textizer browser integration test</title>
+<body>RUNNING</body>
+<script type="module">
+  import init, { PackedText } from '../pkg/textizer.js';
+  try {
+    await init();
+    const doc = new PackedText('Browser decoding test\n'.repeat(80),
+      JSON.stringify({ max_width: 224, max_height: 224 }));
+    try {
+      if (doc.pageCount < 2) throw Error('Pagination did not occur');
+      const manifest = JSON.parse(doc.manifestJson());
+      for (const page of manifest.pages) {
+        const blob = new Blob([doc.pagePng(page.index)], { type: 'image/png' });
+        const bitmap = await createImageBitmap(blob);
+        if (bitmap.width !== page.width || bitmap.height !== page.height)
+          throw Error('Browser decoded wrong dimensions');
+        bitmap.close();
+      }
+      document.body.textContent = `PASS: browser WASM and PNG decoding (${doc.pageCount} pages)`;
+    } finally { doc.free(); }
+  } catch (error) { document.body.textContent = `FAIL: ${error}`; }
+</script>
+</html>

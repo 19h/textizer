@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Textizer WASM example</title>
+<style>
+  body { font: 16px system-ui; max-width: 60rem; margin: 2rem auto; padding: 0 1rem; }
+  textarea { width: 100%; min-height: 14rem; box-sizing: border-box; }
+  button, select { font: inherit; margin: 1rem .5rem 1rem 0; }
+  img { display: block; max-width: 100%; height: auto; image-rendering: pixelated; border: 1px solid #ddd; }
+  figure { margin: 1rem 0; }
+  #status { white-space: pre-wrap; }
+</style>
+<h1>Textizer</h1>
+<p>Creates PNG pages locally using WebAssembly. Unsupported glyphs appear as Unicode escapes.</p>
+<textarea id="text" aria-label="Text to render">Paste text here. No server upload is performed.</textarea>
+<div>
+  <select id="preset" aria-label="Font preset">
+    <option value="safe">Safe: 8x16</option>
+    <option value="data">Data: 6x13</option>
+    <option value="prose">Prose: 5x10</option>
+    <option value="large">Large: 9x18</option>
+  </select>
+  <button id="render" disabled>Render pages</button>
+</div>
+<p id="status" role="status">Loading WebAssembly...</p>
+<div id="pages"></div>
+<script type="module">
+  import init, { PackedText } from '../pkg/textizer.js';
+  const button = document.querySelector('#render');
+  const status = document.querySelector('#status');
+  const pages = document.querySelector('#pages');
+  const urls = [];
+  try {
+    await init();
+    button.disabled = false;
+    status.textContent = 'Ready';
+  } catch (error) { status.textContent = String(error); }
+  button.addEventListener('click', async () => {
+    button.disabled = true;
+    let document;
+    try {
+      urls.splice(0).forEach(URL.revokeObjectURL);
+      pages.replaceChildren();
+      document = new PackedText(
+        window.document.querySelector('#text').value,
+        JSON.stringify({ preset: window.document.querySelector('#preset').value }),
+      );
+      const manifest = JSON.parse(document.manifestJson());
+      status.textContent = `${document.pageCount} page(s), ${manifest.font} font`;
+      for (const page of manifest.pages) {
+        const url = URL.createObjectURL(new Blob([document.pagePng(page.index)], { type: 'image/png' }));
+        urls.push(url);
+        const figure = window.document.createElement('figure');
+        const image = window.document.createElement('img');
+        image.src = url;
+        image.alt = `Page ${page.index + 1}`;
+        image.width = page.width;
+        image.height = page.height;
+        const link = window.document.createElement('a');
+        link.href = url;
+        link.download = page.filename;
+        link.textContent = `Download ${page.filename} (${page.width} x ${page.height} px)`;
+        figure.append(image, link);
+        pages.append(figure);
+        // Yield between pages so a large document does not lock the UI during all PNGs.
+        await new Promise(resolve => requestAnimationFrame(resolve));
+      }
+    } catch (error) { status.textContent = String(error); }
+    finally { document?.free(); button.disabled = false; }
+  });
+</script>
+</html>

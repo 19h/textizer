@@ -1,0 +1,15 @@
+{
+  "reference_directory": "/Users/int/dev/vision-text-tests",
+  "git_commit": "b21916874356d7971e7e6dad08ffb07db7e56de0",
+  "files": {
+    "README.md": "0b1585dc9460908c486ae12ef620950d7c1b96a69e06f4b992d1cc230d4a8fe4",
+    "pack_text.py": "ac2ac3fe1eaa84835b9d923d4fe6d67cfbcd2c61dd4650a98fa910baae05da15",
+    "gen_lib.py": "23c320440cf214a8ea9af90a685d47494e2f6374c2b23b0961a2728065ea1699",
+    "analysis_campaign_comparison.md": "829b12242b398f13acdb50b4a99dac7236c0a7238f45515643899867ce45be67",
+    "analysis_campaign_comparison.json": "cbb918ff85c45384811a7237a93ccc2e91b9d6591aca0553f9420588eca8cdb6",
+    "analysis_encoding_equivalence_gpt-5.6-sol.json": "6f2cef7557507ca45fb542ab9b7dba34a4e92180eb508d5fa6b5c17bb53ad3c2",
+    "analysis_encoding_equivalence_gpt-6-sol.json": "aa96fd2b5b151d70b4180148d4986a0d8a087b8cdd59f62b6facc263d47709ef",
+    "analysis_encoding_equivalence_gpt-6.1-sol.json": "3df772fd3319fba72968fb9e71e17e88e890f9b8705d1dc49cc94c027f79f26f",
+    "analysis_encoding_equivalence_gpt-6-astra.json": "56ea5435369e9f63ac6d0522fa0f9cd231dcdca71396593d4da4d0e8ec8d9e9f"
+  }
+}

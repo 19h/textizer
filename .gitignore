@@ -1,0 +1,174 @@
+# Textizer: local artifacts only.
+# Keep source fonts, reference metadata, image fixtures, and dependency lockfiles
+# under version control. Do not add blanket *.bin, *.png, *.json, or *.wasm rules.
+
+# -----------------------------------------------------------------------------
+# Rust / Cargo
+# -----------------------------------------------------------------------------
+# Matches targets in the root and any future example/workspace crates.
+target/
+# Optional root-level custom build and release destinations.
+/build/
+/dist/
+/release/
+/*.crate
+# Rustfmt backups and generated profiling data.
+**/*.rs.bk
+*.profraw
+*.profdata
+
+# This repository includes a CLI: preserve reproducible dependency resolution.
+!/Cargo.lock
+
+# -----------------------------------------------------------------------------
+# WebAssembly / wasm-pack
+# -----------------------------------------------------------------------------
+# Generated JS glue, TypeScript declarations, WASM binaries, and copied notices.
+/pkg/
+/pkg-*/
+/.wasm-pack/
+# Loose compiler outputs at the repository root, not WASM test fixtures.
+/*.wasm
+/*.wat
+/*.wasm.map
+
+# -----------------------------------------------------------------------------
+# Generated text images / local export runs
+# -----------------------------------------------------------------------------
+# The CLI defaults to packed/. Use packed-<name>/ for additional local runs.
+/packed/
+/packed-*/
+/renders/
+/exports/
+# Files emitted by a CLI invocation with --out .
+/page[0-9][0-9][0-9][0-9].png
+/rows.json
+/manifest.json
+
+# -----------------------------------------------------------------------------
+# JavaScript tooling and browser tests
+# -----------------------------------------------------------------------------
+node_modules/
+.npm/
+.pnpm-store/
+.yarn/cache/
+.yarn/unplugged/
+.yarn/install-state.gz
+.yarn/build-state.yml
+.pnp.*
+.parcel-cache/
+.vite/
+.eslintcache
+.stylelintcache
+*.tsbuildinfo
+/coverage/
+/.nyc_output/
+/playwright-report/
+/test-results/
+/blob-report/
+# Isolated browser profiles are disposable; normal source examples remain tracked.
+/.browser-profile/
+/.chrome-profile/
+# npm pack / package-manager diagnostics, not dependency lockfiles.
+/*.tgz
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+# Keep package-lock.json, pnpm-lock.yaml, yarn.lock, and .yarn/releases trackable.
+
+# -----------------------------------------------------------------------------
+# Python development helpers
+# -----------------------------------------------------------------------------
+# Python is used to import fonts and compare reference pixels, not at runtime.
+__pycache__/
+*.py[cod]
+*$py.class
+/.venv/
+/.venv-*/
+/venv/
+/env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pytype/
+.tox/
+.nox/
+.coverage
+.coverage.*
+/htmlcov/
+*.egg-info/
+# Keep Python dependency manifests and lockfiles trackable.
+
+# -----------------------------------------------------------------------------
+# Local configuration / credentials
+# -----------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+!.env.*.example
+!.env.*.sample
+!.env.*.template
+/.secrets/
+/.direnv/
+/.envrc.local
+# Shared configuration belongs in tracked templates, not these personal overrides.
+/*.local.toml
+/*.local.json
+/*.local.yaml
+/*.local.yml
+
+# -----------------------------------------------------------------------------
+# Editors and language servers
+# -----------------------------------------------------------------------------
+.idea/
+/.vscode/*
+# Allow project-wide VS Code setup while excluding local workspace state.
+!/.vscode/settings.json
+!/.vscode/extensions.json
+!/.vscode/tasks.json
+!/.vscode/launch.json
+*.code-workspace
+*.sublime-workspace
+.fleet/
+.history/
+.ropeproject/
+.cache/
+*~
+*.swp
+*.swo
+*.orig
+*.rej
+.#*
+\#*\#
+
+# -----------------------------------------------------------------------------
+# Local logs, scratch files, and operating-system metadata
+# -----------------------------------------------------------------------------
+/logs/
+/*.log
+/tmp/
+/temp/
+*.tmp
+*.temp
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100/
+.Trashes/
+Icon?
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Root-level crash dumps and native debug bundles; binary fixtures remain trackable.
+/core
+/core.[0-9]*
+/*.dmp
+/*.stackdump
+/*.dSYM/

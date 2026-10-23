@@ -1,0 +1,38 @@
+[
+  {
+    "font": "8x16",
+    "width": 8,
+    "height": 16,
+    "format": "ASCII 32..126; glyph-major, row-major; 1=black, 0=white",
+    "sha256": "f9c7bea15f5f1d9a3a4ad7677b6ad5118a449908a7763133fc26b783e3adcf9f",
+    "source_pil_sha256": "28a8e464f5dbe10474199f713d89c14575e28738fedc6e7b49357587daaadec5",
+    "source_pbm_sha256": "f31d21d293dbe3bd3986f53e6ba3dfa46b82e588250a941cd90ee7d57ea8b3d1"
+  },
+  {
+    "font": "6x13",
+    "width": 6,
+    "height": 13,
+    "format": "ASCII 32..126; glyph-major, row-major; 1=black, 0=white",
+    "sha256": "b2933cfdca2e67d47d0d286c6be9c0c2826d6a77f2217791297200a40dbc8fbd",
+    "source_pil_sha256": "e111fb7f3a20d9febffb070a67abcc5398cf794a9326647889b6abf66cebd184",
+    "source_pbm_sha256": "790c609e223610b7bb00bac582871c4b3aa2a8cb78e99b7d259d3625f830cc3e"
+  },
+  {
+    "font": "clR5x10",
+    "width": 5,
+    "height": 10,
+    "format": "ASCII 32..126; glyph-major, row-major; 1=black, 0=white",
+    "sha256": "4e4a486101b0a42902de08f5aa233a44075843347538727cb7b2ffb7ee14b504",
+    "source_pil_sha256": "128598552fd7e02ba30db6f3f5f00262895a6561dd88881654bc5331344e0b00",
+    "source_pbm_sha256": "88c42d222db24268cb20f4be8027bc11a01aca22ffbe859914c11893c83cec52"
+  },
+  {
+    "font": "9x18",
+    "width": 9,
+    "height": 18,
+    "format": "ASCII 32..126; glyph-major, row-major; 1=black, 0=white",
+    "sha256": "e6b61fed521799dad716cf14103cc884e1651615a246c0d245ea578f61edb1e8",
+    "source_pil_sha256": "807a964de6db6b4fece2b0f6cb25bd93a4ed295953c5da649278de3b86416bc2",
+    "source_pbm_sha256": "a32fda1d4ddb0a945144696c1182bb5f4a4d7fcaecbc142180c74239020871b9"
+  }
+]
